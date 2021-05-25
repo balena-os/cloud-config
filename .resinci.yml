@@ -1,0 +1,23 @@
+---
+docker:
+  builds:
+    - path: .
+      dockerfile: Dockerfile
+      docker_repo: balena-push
+      publish: false
+      args:
+        - RESINRC_RESIN_URL=balena-staging.com
+        - BALENA_APPS=[{"app":"cloud-config-aarch64","type":"generic-aarch64"},{"app":"cloud-config-amd64","type":"generic"}]
+      secrets:
+        - id: balena-api-token
+          src: .balena/secrets/staging/balena_api_token.txt
+    - path: .
+      dockerfile: Dockerfile
+      docker_repo: balena-push
+      publish: false
+      args:
+        - RESINRC_RESIN_URL=balena-cloud.com
+        - BALENA_APPS=[{"app":"cloud-config-aarch64","type":"generic-aarch64"},{"app":"cloud-config-amd64","type":"generic"}]
+      secrets:
+        - id: balena-api-token
+          src: .balena/secrets/production/balena_api_token.txt
