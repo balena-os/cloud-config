@@ -3,7 +3,7 @@ docker:
   builds:
     - path: .
       dockerfile: Dockerfile
-      docker_repo: balena-push
+      docker_repo: balena-push-staging
       publish: false
       args:
         - RESINRC_RESIN_URL=balena-staging.com
@@ -13,7 +13,7 @@ docker:
           src: .balena/secrets/staging/balena_api_token.txt
     - path: .
       dockerfile: Dockerfile
-      docker_repo: balena-push
+      docker_repo: balena-push-production
       publish: false
       args:
         - RESINRC_RESIN_URL=balena-cloud.com

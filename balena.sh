@@ -28,6 +28,10 @@ config_from_metadata() {
     done
 }
 
-ssh_with_opts "os-config join '$(config_from_metadata)'"
+uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
+
+if [[ -z ${uuid} ]]; then
+    ssh_with_opts "os-config join '$(config_from_metadata)'"
+fi
 
 exec balena-idle "$@"
