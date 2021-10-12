@@ -1,19 +1,15 @@
 name: cloud-config
 type: sw.application
-description: >-
+description: |-
   Configure balenaOS using user-data provided by the following metadata APIs:
-
-  * Amazon EC2
-  * DigitalOcean
-  * Packet/Equinix
+  * Amazon EC2 * DigitalOcean * Packet/Equinix
 fleetcta: Go nuts
 post-provisioning: >-
   ## Usage instructions
 
-  * download balenaOS fleet image
-  * import the image into a supported provider
-  * download config.json for your own fleet
-  * ship config.json in user-data when creating a server
+  * download balenaOS fleet image * import the image into a supported provider *
+  download config.json for your own fleet * ship config.json in user-data when
+  creating a server
 assets:
   repository:
     type: blob.asset
@@ -22,8 +18,7 @@ assets:
   logo:
     type: blob.asset
     data:
-      url: >-
-        https://raw.githubusercontent.com/balena-os/cloud-config/master/logo.png
+      url: 'https://raw.githubusercontent.com/balena-os/cloud-config/master/logo.png'
 data:
   defaultDeviceType: qemux86-64
   supportedDeviceTypes:
