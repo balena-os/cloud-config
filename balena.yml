@@ -1,7 +1,6 @@
 name: cloud-config
 type: sw.application
-description: >-
-  Configure balenaOS from user-data provided by cloud metadata APIs
+description: Configure balenaOS from user-data provided by cloud metadata APIs
 fleetcta: Go nuts
 post-provisioning: >-
   ## Usage instructions
@@ -14,8 +13,9 @@ post-provisioning: >-
 
   **Usage**
 
-  Download balenaOS fleet image and import it into a supported provider. Download
-  config.json for your own fleet and ship it in user-data when creating a server.
+  Download balenaOS fleet image and import it into a supported provider.
+  Download config.json for your own fleet and ship it in user-data when creating
+  a server.
 assets:
   repository:
     type: blob.asset
