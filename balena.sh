@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -xa
 
 metadata_urls=( \
   'http://169.254.169.254/latest/user-data' \
