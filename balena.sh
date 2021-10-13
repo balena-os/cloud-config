@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-set -xa
-
-metadata_urls=( \
-  'http://169.254.169.254/latest/user-data' \
-  'http://169.254.169.254/metadata/v1/user-data' \
-  'https://metadata.platformequinix.com/userdata' \
+metadata_urls=(
+  'http://169.254.169.254/latest/user-data'
+  'http://169.254.169.254/metadata/v1/user-data'
+  'https://metadata.platformequinix.com/userdata'
 )
 
 curl_with_opts() {
@@ -38,21 +36,31 @@ if ssh_with_opts -t; then
         ssh_with_opts "os-config join '$(config_from_metadata)'"
     fi
 else
-	# open fleet flow requires a reboot (slower)
+	# open fleet flow requires either service restart via DBUS or a reboot (slower)
     tmpmnt="$(mktemp -d)"
     device="$(blkid | grep resin-boot | awk -F':' '{print $1}')"
     mount "${device}" "${tmpmnt}"
 
     tmpconf="$(mktemp)"
     config_from_metadata > "${tmpconf}"
-    app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
 
-    if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
-        cat < "${tmpconf}" > "${tmpmnt}/config.json" \
-          && sync \
-          && umount "${device}" \
-          && curl -X POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
-          --header 'Content-Type:application/json'
+    if [[ -f "${tmpconf}" ]]; then
+		app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
+
+		if [[ -n "${app_id}" ]]; then
+			if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
+				cat < "${tmpconf}" > "${tmpmnt}/config.json" \
+				  && sync \
+				  && umount "${device}" \
+				  && (DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket dbus-send --system \
+				  --dest=org.freedesktop.systemd1 \
+				  --type=method_call \
+				  --print-reply /org/freedesktop/systemd1 \
+				  org.freedesktop.systemd1.Manager.StartUnit string:"os-config.service" string:"replace" \
+				  || curl -sX POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
+				  --header 'Content-Type:application/json')
+			fi
+		fi
     fi
 fi
 
