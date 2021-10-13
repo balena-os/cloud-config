@@ -29,14 +29,14 @@ config_from_metadata() {
 }
 
 if ssh_with_opts -t; then
-    # requires SSH private key to be preloaded in the image (faster)
+    # (legacy) requires SSH private key to be preloaded in the image
     uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
 
     if [[ -z ${uuid} ]]; then
         ssh_with_opts "os-config join '$(config_from_metadata)'"
     fi
 else
-	# open fleet flow requires either service restart via DBUS or a reboot (slower)
+    # open fleet flow requires a reboot
     tmpmnt="$(mktemp -d)"
     device="$(blkid | grep resin-boot | awk -F':' '{print $1}')"
     mount "${device}" "${tmpmnt}"
@@ -45,22 +45,17 @@ else
     config_from_metadata > "${tmpconf}"
 
     if [[ -f "${tmpconf}" ]]; then
-		app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
+        app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
 
-		if [[ -n "${app_id}" ]]; then
-			if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
-				cat < "${tmpconf}" > "${tmpmnt}/config.json" \
-				  && sync \
-				  && umount "${device}" \
-				  && (DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket dbus-send --system \
-				  --dest=org.freedesktop.systemd1 \
-				  --type=method_call \
-				  --print-reply /org/freedesktop/systemd1 \
-				  org.freedesktop.systemd1.Manager.StartUnit string:"os-config.service" string:"replace" \
-				  || curl -sX POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
-				  --header 'Content-Type:application/json')
-			fi
-		fi
+        if [[ -n "${app_id}" ]]; then
+            if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
+                cat < "${tmpconf}" > "${tmpmnt}/config.json" \
+                  && sync \
+                  && umount "${device}" \
+                  && curl -sX POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
+                  --header 'Content-Type:application/json'
+            fi
+        fi
     fi
 fi
 
