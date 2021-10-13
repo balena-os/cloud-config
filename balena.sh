@@ -17,6 +17,8 @@ ssh_with_opts() {
       "root@$(ip route | awk '/balena0|br-[0-9a-fA-F]/ { print $7 }' | head -n 1)" \
       -o 'StrictHostKeyChecking=no' \
       -o 'UserKnownHostsFile=/dev/null' \
+      -o 'PasswordAuthentication=no' \
+      -o 'ConnectTimeout=60' \
       "$@"
 }
 
@@ -28,10 +30,30 @@ config_from_metadata() {
     done
 }
 
-uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
+if ssh_with_opts -t; then
+    # requires SSH private key to be preloaded in the image (faster)
+    uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
 
-if [[ -z ${uuid} ]]; then
-    ssh_with_opts "os-config join '$(config_from_metadata)'"
+    if [[ -z ${uuid} ]]; then
+        ssh_with_opts "os-config join '$(config_from_metadata)'"
+    fi
+else
+	# open fleet flow requires a reboot (slower)
+    tmpmnt="$(mktemp -d)"
+    device="$(blkid | grep resin-boot | awk -F':' '{print $1}')"
+    mount "${device}" "${tmpmnt}"
+
+    tmpconf="$(mktemp)"
+    config_from_metadata > "${tmpconf}"
+    app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
+
+    if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
+        cat < "${tmpconf}" > "${tmpmnt}/config.json" \
+          && sync \
+          && umount "${device}" \
+          && curl -X POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
+          --header 'Content-Type:application/json'
+    fi
 fi
 
 exec balena-idle "$@"
