@@ -35,17 +35,17 @@ jobs:
           environment: balena-staging.com
 
       - id: staging-release-version
-        if: ${{ steps.balena_ci.outputs.release_id }}
+        if: ${{ steps.staging-release.outputs.release_id }}
         shell: bash
         run: |
           raw_version="$(curl -fsSL -X GET \
-            "https://api.balena-staging.com/v6/release(${{ steps.balena_ci.outputs.release_id }})?\$select=version" \
+            "https://api.balena-staging.com/v6/release(${{ steps.staging-release.outputs.release_id }})?\$select=version" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.STAGING_BALENA_API_KEY }}" | jq -r '.d[].version.raw')"
           echo "::set-output name=raw_version::$raw_version"
 
       - id: staging-tag
-        if: ${{ steps.balena_api.outputs.raw_version }}
+        if: ${{ steps.staging-release-version.outputs.raw_version }}
         uses: tvdias/github-tagger@v0.0.2
         continue-on-error: true
         with:
@@ -61,17 +61,17 @@ jobs:
           versionbot: true
 
       - id: production-release-version
-        if: ${{ steps.balena_ci.outputs.release_id }}
+        if: ${{ steps.production-release.outputs.release_id }}
         shell: bash
         run: |
           raw_version="$(curl -fsSL -X GET \
-            "https://api.balena-cloud.com/v6/release(${{ steps.balena_ci.outputs.release_id }})?\$select=version" \
+            "https://api.balena-cloud.com/v6/release(${{ steps.production-release.outputs.release_id }})?\$select=version" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.PRODUCTION_BALENA_API_KEY }}" | jq -r '.d[].version.raw')"
           echo "::set-output name=raw_version::$raw_version"
 
       - id: production-tag
-        if: ${{ steps.balena_api.outputs.raw_version }}
+        if: ${{ steps.production-release-version.outputs.raw_version }}
         uses: tvdias/github-tagger@v0.0.2
         continue-on-error: true
         with:
