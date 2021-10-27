@@ -1,5 +1,1 @@
-.gitsecret/keys/random_seed
-!*.secret
-.balena/secrets/staging/balena_api_token.txt
-.balena/secrets/production/balena_api_token.txt
-.balena/secrets/id_ed25519
+.balena/balena.yml

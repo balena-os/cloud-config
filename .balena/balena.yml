@@ -1,5 +1,0 @@
----
-build-secrets:
-  global:
-    - source: id_ed25519
-      dest: id_ed25519

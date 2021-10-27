@@ -29,7 +29,8 @@ config_from_metadata() {
 }
 
 if ssh_with_opts -t; then
-    # (legacy) requires SSH private key to be preloaded in the image
+    # (legacy) requires SSH private key to be preloaded in the image and corresponding
+    # public key injected info config.json on the host OS
     uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
 
     if [[ -z ${uuid} ]]; then
