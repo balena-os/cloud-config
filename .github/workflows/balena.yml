@@ -1,8 +1,12 @@
+---
 name: deploy with balena
 
 on:
- pull_request:
+  pull_request:
     types: [opened, synchronize, closed]
+    branches:
+      - master
+  push:
     branches:
       - master
 
