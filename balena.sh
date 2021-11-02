@@ -12,11 +12,11 @@ curl_with_opts() {
 
 ssh_with_opts() {
     ssh -p 22222 \
-      "root@$(ip route | awk '/balena0|br-[0-9a-fA-F]/ { print $7 }' | head -n 1)" \
       -o 'StrictHostKeyChecking=no' \
       -o 'UserKnownHostsFile=/dev/null' \
       -o 'PasswordAuthentication=no' \
       -o 'ConnectTimeout=60' \
+      "root@$(ip route | awk '/balena0|br-[0-9a-fA-F]/ { print $7 }' | head -n 1)" \
       "$@"
 }
 
@@ -28,12 +28,12 @@ config_from_metadata() {
     done
 }
 
-if ssh_with_opts -t; then
+if ssh_with_opts -t id; then
     # (legacy) requires SSH private key to be preloaded in the image and corresponding
     # public key injected info config.json on the host OS
-    uuid="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .uuid")"
+    api_key="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .apiKey")"
 
-    if [[ -z ${uuid} ]]; then
+    if [[ "${api_key}" == 'null' ]]; then
         ssh_with_opts "os-config join '$(config_from_metadata)'"
     fi
 else
