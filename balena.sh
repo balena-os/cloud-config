@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 metadata_urls=(
   'http://169.254.169.254/latest/user-data'
   'http://169.254.169.254/metadata/v1/user-data'
@@ -31,9 +33,7 @@ config_from_metadata() {
 if ssh_with_opts -t id; then
     # (legacy) requires SSH private key to be preloaded in the image and corresponding
     # public key injected info config.json on the host OS
-    device_api_key="$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .deviceApiKey")"
-
-    if [[ "${device_api_key}" == 'null' ]]; then
+    if [[ "$(ssh_with_opts "cat /mnt/boot/config.json | jq -r .deviceApiKey")" == 'null' ]]; then
         ssh_with_opts "os-config join '$(config_from_metadata)'"
     fi
 else
