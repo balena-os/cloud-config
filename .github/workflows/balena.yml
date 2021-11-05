@@ -18,63 +18,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: set secret(s)
-        uses: mikefarah/yq@master
-        with:
-          cmd: |
-            cat .balena/balena.tmpl \
-              | yq eval '.build-variables.global[0] = "PKEY_ID_ED25519=${{ secrets.PKEY_ID_ED25519 }}"' - \
-              > .balena/balena.yml
-
       - id: staging-release
         uses: balena-io/balena-ci@master
         with:
           balena_token: ${{ secrets.STAGING_BALENA_API_KEY }}
+          cache: false
+          environment: balena-staging.com
           fleet: balena_os/cloud-config-${{ matrix.arch }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           versionbot: true
-          environment: balena-staging.com
-
-      - id: staging-release-version
-        if: ${{ steps.staging-release.outputs.release_id }}
-        shell: bash
-        run: |
-          raw_version="$(curl -fsSL -X GET \
-            "https://api.balena-staging.com/v6/release(${{ steps.staging-release.outputs.release_id }})?\$select=version" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.STAGING_BALENA_API_KEY }}" | jq -r '.d[].version.raw')"
-          echo "::set-output name=raw_version::$raw_version"
-
-      - id: staging-tag
-        if: ${{ steps.staging-release-version.outputs.raw_version }}
-        uses: tvdias/github-tagger@v0.0.2
-        continue-on-error: true
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "v${{ steps.staging-release-version.outputs.raw_version }}"
 
       - id: production-release
         uses: balena-io/balena-ci@master
         with:
           balena_token: ${{ secrets.PRODUCTION_BALENA_API_KEY }}
+          cache: false
           fleet: balena_os/cloud-config-${{ matrix.arch }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           versionbot: true
-
-      - id: production-release-version
-        if: ${{ steps.production-release.outputs.release_id }}
-        shell: bash
-        run: |
-          raw_version="$(curl -fsSL -X GET \
-            "https://api.balena-cloud.com/v6/release(${{ steps.production-release.outputs.release_id }})?\$select=version" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.PRODUCTION_BALENA_API_KEY }}" | jq -r '.d[].version.raw')"
-          echo "::set-output name=raw_version::$raw_version"
-
-      - id: production-tag
-        if: ${{ steps.production-release-version.outputs.raw_version }}
-        uses: tvdias/github-tagger@v0.0.2
-        continue-on-error: true
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "v${{ steps.production-release-version.outputs.raw_version }}"
