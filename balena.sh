@@ -42,11 +42,13 @@ config_from_metadata > "${tmpconf}"
 if [[ -f "${tmpmnt}/config.json" ]] && [[ -f "${tmpconf}" ]]; then
     device_api_key="$(cat < "${tmpmnt}/config.json" | jq -r .deviceApiKey)"
     if [[ "${device_api_key}" =~ null|^$ ]]; then
+        # unmanaged
 		cat < "${tmpconf}" > "${tmpmnt}/config.json"
 	else
 		app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
-		if [[ -n "${app_id}" ]]; then
-			if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
+		if [[ -n "${app_id}" ]] && [[ -n "${BALENA_APP_ID}" ]]; then
+			if [[ "${BALENA_APP_ID}" != "${app_id}" ]]; then
+			    # managed (balenaHub/cloud-config)
 				cat < "${tmpconf}" > "${tmpmnt}/config.json" \
 				  && curl -sX POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
 				  --header 'Content-Type:application/json'
