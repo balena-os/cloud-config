@@ -31,7 +31,11 @@ config_from_metadata() {
     #shellcheck disable=SC2034,SC2039 # /bin/sh is a symbolic link to bash on balenaOS
     for url in "${metadata_urls[@]}"; do
         user_data="$(curl_with_opts "${url}")"
-        [ -n "${user_data}" ] && echo "${user_data}" && break
+
+        if [ -n "${user_data}" ]; then
+            echo "${user_data}" | jq -r '.cloudConfig="done"'
+            break
+        fi
     done
 }
 
@@ -40,18 +44,9 @@ tmpconf="$(mktemp)"
 config_from_metadata > "${tmpconf}"
 
 if [[ -f "${tmpmnt}/config.json" ]] && [[ -f "${tmpconf}" ]]; then
-    device_api_key="$(cat < "${tmpmnt}/config.json" | jq -r .deviceApiKey)"
-    if [[ "${device_api_key}" =~ null|^$ ]]; then
+    cloud_config="$(cat < "${tmpmnt}/config.json" | jq -r '.cloudConfig')"
+    if ! [[ "${cloud_config}" =~ ^done$ ]]; then
 		cat < "${tmpconf}" > "${tmpmnt}/config.json"
-	else
-		app_id="$(cat < "${tmpconf}" | jq -r .applicationId)"
-		if [[ -n "${app_id}" ]]; then
-			if [[ "${RESIN_APP_ID}" != "${app_id}" ]]; then
-				cat < "${tmpconf}" > "${tmpmnt}/config.json" \
-				  && curl -sX POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
-				  --header 'Content-Type:application/json'
-			fi
-		fi
 	fi
 fi
 
