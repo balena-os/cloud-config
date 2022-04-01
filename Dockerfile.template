@@ -1,11 +1,6 @@
 FROM balenalib/%%BALENA_ARCH%%-alpine
 
-ARG PKEY_ID_ED25519
-
-RUN set -eu && install_packages openssh-client jq \
-    && mkdir -p /root/.ssh \
-    && ([ -n ${PKEY_ID_ED25519} ] && echo ${PKEY_ID_ED25519} | base64 -d > /root/.ssh/id_ed25519) \
-    && ([ -n ${PKEY_ID_ED25519} ] && chmod 600 /root/.ssh/id_ed25519)
+RUN install_packages jq
 
 COPY balena.sh /usr/local/bin/
 
