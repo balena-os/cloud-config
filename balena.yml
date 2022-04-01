@@ -13,9 +13,7 @@ post-provisioning: >-
 
   **Usage**
 
-  Download balenaOS fleet image and import it into a supported provider.
-  Download config.json for your own fleet and ship it in user-data when creating
-  a server.
+  Download balenaOS fleet image and import it into a supported provider. Download config.json for your own fleet and ship it in user-data when creating a server.
 assets:
   repository:
     type: blob.asset
@@ -34,4 +32,4 @@ data:
     - intel-nuc
     - qemux86
     - qemux86-64
-version: 0.0.14
+version: 0.0.15
