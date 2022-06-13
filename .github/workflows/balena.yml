@@ -16,7 +16,7 @@ jobs:
         arch: [aarch64, amd64]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - id: staging-release
         uses: balena-io/balena-ci@master
