@@ -1,14 +1,18 @@
 ---
-name: deploy with balena
+name: build release
 
 on:
-  pull_request:
+ pull_request:
     types: [opened, synchronize, closed]
     branches:
       - master
 
+env:
+  ENVIRONMENT: balena-cloud.com
+  BLOCK: balenablocks/cloud-config
+
 jobs:
-  deploy-release:
+  build-release:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -18,21 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - id: staging-release
+      - name: push draft or finalise release
         uses: balena-io/balena-ci@master
         with:
-          balena_token: ${{ secrets.STAGING_BALENA_API_KEY }}
+          balena_token: ${{ secrets.BALENA_API_KEY }}
           cache: false
-          environment: balena-staging.com
-          fleet: balena_os/cloud-config-${{ matrix.arch }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          versionbot: true
-
-      - id: production-release
-        uses: balena-io/balena-ci@master
-        with:
-          balena_token: ${{ secrets.PRODUCTION_BALENA_API_KEY }}
-          cache: false
-          fleet: balena_os/cloud-config-${{ matrix.arch }}
+          fleet: ${{ env.BLOCK }}-${{ matrix.arch }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           versionbot: true
