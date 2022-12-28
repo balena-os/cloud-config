@@ -1,0 +1,245 @@
+- commits:
+    - subject: Migrate to Flowzone
+      hash: 9fee1c79b9bb75299ae98375a6cd1968af9fb39d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 0.1.1
+  title: ""
+  date: 2022-12-28T23:38:47.213Z
+- version: 0.1.0
+  date: 2022-08-01T22:31:30Z
+  commits:
+    - hash: 6efe2e3983c8c88195e931ad9e22e4f6557201bf
+      author: ab77
+      footers:
+        change-type: minor
+      subject: Move to balenaBlocks/create release(s)
+      body: null
+- version: 0.0.16
+- date: 2022-06-13T18:51:49Z
+- commits:
+    - hash: 032ec7b745e163657d1c5f3b816cad771844d6ac
+- commits:
+    - author: Renovate Bot
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Update actions/checkout action from v2 to v3
+- commits:
+    - body: null
+- version: 0.0.15
+- date: 2022-04-01T01:27:03Z
+- commits:
+    - hash: 93d1d236f026fcac882d2e10c1529b9bacc7eb47
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Remove SSH provisioning flow
+- commits:
+    - body: null
+- version: 0.0.14
+- date: 2021-11-04T17:42:45Z
+- commits:
+    - hash: 87ae1976f301c1487c8a0515c224b74c12ff0933
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Ensure device is unmanaged
+- commits:
+    - body: null
+- version: 0.0.13
+- date: 2021-11-02T19:00:23Z
+- commits:
+    - hash: 97a664d7c5854b184fe5f3fae6227142585086a9
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Correct SSH flow
+- commits:
+    - body: null
+- version: 0.0.12
+- date: 2021-10-27T21:45:10Z
+- commits:
+    - hash: b5effbf8ddab43f142a0d42fddfa7ec6ea2d250d
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Revert
+- commits:
+    - body: null
+- version: 0.0.10-1635369381329
+- date: 2021-10-27T21:14:11Z
+- commits:
+    - hash: a217fa0bf7b2b92c12e5e186e7ebc6c5a38b4381
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: React to GitHub push:master event
+- commits:
+    - body: null
+- version: 0.0.10
+- date: 2021-10-27T17:45:48Z
+- commits:
+    - hash: dffeee88d18c7b625640d1911384adc0d7c84767
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Correct tagging steps
+- commits:
+    - body: null
+- version: 0.0.9
+- date: 2021-10-27T17:21:12Z
+- commits:
+    - hash: aaf275ab618cf88119410974ec88da4377783a59
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Refactor to use official GH action
+- commits:
+    - body: null
+- version: 0.0.8
+- date: 2021-10-13T18:23:50Z
+- commits:
+    - hash: df016e290c6e3484d7e1a10759111ebe23b3888f
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Revert service restart via DBUS
+- commits:
+    - body: "* mark SSH method as legacy in favour of open fleets"
+- version: 0.0.7
+- date: 2021-10-13T17:56:48Z
+- commits:
+    - hash: 6f0641b22029ca937a72ce1c0bdd44f5b91d3cd3
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Try restarting os-config via DBUS
+- commits:
+    - body: "* better error handling"
+- version: 0.0.6
+- date: 2021-10-13T16:29:34Z
+- commits:
+    - hash: 2e6f2f7336beb44ad305ebf64eaa07618da2dee7
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Don't terminate on errors
+- commits:
+    - body: null
+- version: 0.0.5
+- date: 2021-10-13T14:37:34Z
+- commits:
+    - hash: 1adcc2b0807422ef93225b1ac25c089dba8c9cda
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Adds provisioning via open fleet(s)
+- commits:
+    - body: |-
+        * does not require SSH, but requires a reboot
+        * could use DBUS in the future to restart os-config service instead
+- version: 0.0.4
+- date: 2021-10-12T22:42:26Z
+- commits:
+    - hash: 616cfcc4281ef2de7cd366901e5b56983969bd65
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Reformat balena.yml
+- commits:
+    - body: null
+- version: 0.0.3
+- date: 2021-10-12T22:13:28Z
+- commits:
+    - hash: 1a52ebb9975d241e3baa630ca267dc7db0a4e0dc
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Check if the device is already registered
+- commits:
+    - body: "* add baleaHub metadata"
+- commits:
+    - hash: 5118314ecb5232efb974a625b8d4d3ef6a55814f
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Change DT for x86_64 builds
+- commits:
+    - body: |-
+        * generic-amd64i DT not ready yet:
+        https://github.com/balena-io/contracts/pull/231
+- version: 0.0.2
+- date: 2021-05-25T23:44:52Z
+- commits:
+    - hash: ff6a360b44e05bf79bdd3b9601ffdabfeea3dc37
+- commits:
+    - author: ab77
+- commits:
+    - footers:
+        change-type: patch
+- commits:
+    - subject: Initial commit
+- commits:
+    - body: >-
+        * balenaCloud application used to configure balenaOS from supported
+        metadata services
+
+        * attempts to retrieve config.json payload from user-data and runs os-config
+
+        * typically used with preload workflow
+
+        * tested in AWS/EC2
+
+        * deployments orchestrated using balenaCI "docker" repository type/workflow
+
+        * uses balenaCloud builders to push releases to both staging and production environments
+
+        * all secrets encrypted at rest using git-secret(.io) workflow
