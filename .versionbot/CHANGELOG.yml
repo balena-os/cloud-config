@@ -1,4 +1,19 @@
 - commits:
+    - subject: "balena.sh: Adapt to device mapper"
+      hash: 57a29036b0aafb2b90f4c11efd9a61c353911761
+      body: |
+        When booting encrypted disks the partitions are using device mapper.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Alex Gonzalez <alexg@balena.io>
+        signed-off-by: Alex Gonzalez <alexg@balena.io>
+      author: Alex Gonzalez
+      nested: []
+  version: 0.1.2
+  title: ""
+  date: 2022-12-29T15:04:43.661Z
+- commits:
     - subject: Migrate to Flowzone
       hash: 9fee1c79b9bb75299ae98375a6cd1968af9fb39d
       body: ""
