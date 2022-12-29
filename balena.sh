@@ -2,7 +2,14 @@
 
 set -ex
 
-device="$(blkid | grep resin-boot | awk -F':' '{print $1}')"
+devices="$(blkid | grep resin-boot | awk -F':' '{print $1}' | tr '\n' ' ')"
+for device in $devices; do
+    if [[ "${device}" == *mapper* ]]; then
+        continue
+    else
+        echo "${device}"
+    fi
+done
 
 metadata_urls=(
   'http://169.254.169.254/latest/user-data'
@@ -14,7 +21,7 @@ function cleanup() {
    (sync && umount "${1}") || true
 }
 
-trap 'cleanup ${device}' EXIT
+trap 'cleanup ${tmpmnt}' EXIT
 
 function mount_boot() {
     local tmpmnt
@@ -28,7 +35,7 @@ function curl_with_opts() {
 }
 
 function reboot_device() {
-    cleanup "${device}"
+    cleanup "${tmpmnt}"
 
     curl_with_opts --retry 3 \
       -X POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
@@ -56,6 +63,6 @@ if [[ -f "${tmpmnt}/config.json" ]] && [[ -f "${tmpconf}" ]]; then
     if ! [[ "${cloud_config}" =~ ^done$ ]]; then
         cat < "${tmpconf}" > "${tmpmnt}/config.json" && reboot_device
     else
-        cleanup && balena-idle
+        cleanup "${tmpmnt}" && balena-idle
     fi
 fi
