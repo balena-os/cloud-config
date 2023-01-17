@@ -18,13 +18,13 @@ assets:
   repository:
     type: blob.asset
     data:
-      url: 'https://github.com/balenablocks/cloud-config'
+      url: 'https://github.com/balena-os/cloud-config'
   logo:
     type: blob.asset
     data:
-      url: 'https://raw.githubusercontent.com/balenablocks/cloud-config/master/logo.png'
+      url: 'https://raw.githubusercontent.com/balena-os/cloud-config/master/logo.png'
 data:
-  defaultDeviceType: qemux86-64
+  defaultDeviceType: generic-amd64
   supportedDeviceTypes:
     - generic-aarch64
     - generic-amd64
