@@ -1,4 +1,20 @@
 - commits:
+    - subject: Remove reboot
+      hash: 745c1151d17dc8dbb8b4f05d7d70b125f4901edc
+      body: |
+        Modern balenaOS versions will provision just by overwriting config.json
+        so a reboot is not required.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Alex Gonzalez <alexg@balena.io>
+        signed-off-by: Alex Gonzalez <alexg@balena.io>
+      author: Alex Gonzalez
+      nested: []
+  version: 0.1.4
+  title: ""
+  date: 2023-03-02T22:00:48.228Z
+- commits:
     - subject: Move to balenaOS app
       hash: b3bd6b308c58fd05e77838139b28ab6e0a913855
       body: ""
