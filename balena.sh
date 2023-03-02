@@ -34,14 +34,6 @@ function curl_with_opts() {
     curl --fail --silent --connect-timeout 3 "$@"
 }
 
-function reboot_device() {
-    cleanup "${tmpmnt}"
-
-    curl_with_opts --retry 3 \
-      -X POST "${BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${BALENA_SUPERVISOR_API_KEY}" \
-      -H 'Content-Type: application/json' | jq -r
-}
-
 function config_from_metadata() {
     #shellcheck disable=SC2034,SC2039 # /bin/sh is a symbolic link to bash on balenaOS
     for url in "${metadata_urls[@]}"; do
@@ -61,8 +53,7 @@ config_from_metadata > "${tmpconf}"
 if [[ -f "${tmpmnt}/config.json" ]] && [[ -f "${tmpconf}" ]]; then
     cloud_config="$(cat < "${tmpmnt}/config.json" | jq -r '.cloudConfig')"
     if ! [[ "${cloud_config}" =~ ^done$ ]]; then
-        cat < "${tmpconf}" > "${tmpmnt}/config.json" && reboot_device
-    else
-        cleanup "${tmpmnt}" && balena-idle
+        cat < "${tmpconf}" > "${tmpmnt}/config.json"
     fi
+    cleanup "${tmpmnt}" && balena-idle
 fi
