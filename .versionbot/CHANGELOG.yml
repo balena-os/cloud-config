@@ -1,4 +1,18 @@
 - commits:
+    - subject: Extend renovate config from balena-io/renovate-config
+      hash: a11d8b6a35020d32964d0037450fa9113aa79e8a
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 0.1.5
+  title: ""
+  date: 2023-05-29T20:03:27.291Z
+- commits:
     - subject: Remove reboot
       hash: 745c1151d17dc8dbb8b4f05d7d70b125f4901edc
       body: |
