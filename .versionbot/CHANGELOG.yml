@@ -1,4 +1,18 @@
 - commits:
+    - subject: adds support for Azure VMs
+      hash: fc697afe0f8018410de6c67ce59e7247861d8a6d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Alex Gonzalez <alexg@balena.io>
+        signed-off-by: Alex Gonzalez <alexg@balena.io>
+      author: Anton Belodedenko
+      nested: []
+  version: 0.1.7
+  title: ""
+  date: 2024-03-26T13:15:05.138Z
+- commits:
     - subject: Remove repo config from flowzone.yml
       hash: c4dff1057009c3fcec31355ab20a286b9a8e8109
       body: |
@@ -306,14 +320,17 @@
         * balenaCloud application used to configure balenaOS from supported
         metadata services
 
-        * attempts to retrieve config.json payload from user-data and runs os-config
+        * attempts to retrieve config.json payload from user-data and runs
+        os-config
 
         * typically used with preload workflow
 
         * tested in AWS/EC2
 
-        * deployments orchestrated using balenaCI "docker" repository type/workflow
+        * deployments orchestrated using balenaCI "docker" repository
+        type/workflow
 
-        * uses balenaCloud builders to push releases to both staging and production environments
+        * uses balenaCloud builders to push releases to both staging and
+        production environments
 
         * all secrets encrypted at rest using git-secret(.io) workflow
