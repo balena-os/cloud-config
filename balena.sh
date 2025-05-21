@@ -45,7 +45,7 @@ function config_from_metadata() {
         url="$(echo "${metadata_url}" | awk -F';' '{print $1}')"
         headers="$(echo "${metadata_url}" | awk -F';' '{print $2}')"
         response="$(curl_with_opts ${headers} "${url}")"
-        user_data="$(echo "${response}" | base64 -d)"
+        user_data="$(echo "${response}" | base64 -d || true)"
         if [ -z "${user_data}" ]; then
             user_data="${response}"
         fi
