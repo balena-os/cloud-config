@@ -1,4 +1,19 @@
 - commits:
+    - subject: Stop script exiting prematurely if metadata_url response is not base64
+        encoded
+      hash: 0cd4b615fbbc6b512bf85d8455a4a0df6a23385f
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Ryan Cooke
+        signed-off-by: Ryan Cooke
+      author: Ryan Cooke
+      nested: []
+  version: 0.1.8
+  title: ""
+  date: 2025-05-21T14:51:16.277Z
+- commits:
     - subject: adds support for Azure VMs
       hash: fc697afe0f8018410de6c67ce59e7247861d8a6d
       body: ""
