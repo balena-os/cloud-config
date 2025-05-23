@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_ARCH%%-alpine
+FROM balenalib/%%BALENA_ARCH%%-alpine:3.17
 
 RUN install_packages jq
 
