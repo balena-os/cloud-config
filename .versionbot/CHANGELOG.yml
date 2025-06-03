@@ -1,4 +1,18 @@
 - commits:
+    - subject: only base64 decode metadata if running on Azure
+      hash: c41a617317e564e35523afa235bdf6052e797ef2
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Ryan Cooke
+        signed-off-by: Ryan Cooke
+      author: Ryan Cooke
+      nested: []
+  version: 0.1.9
+  title: ""
+  date: 2025-06-03T10:39:04.786Z
+- commits:
     - subject: Stop script exiting prematurely if metadata_url response is not base64
         encoded
       hash: 0cd4b615fbbc6b512bf85d8455a4a0df6a23385f
