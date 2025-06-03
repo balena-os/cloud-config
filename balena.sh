@@ -45,10 +45,13 @@ function config_from_metadata() {
         url="$(echo "${metadata_url}" | awk -F';' '{print $1}')"
         headers="$(echo "${metadata_url}" | awk -F';' '{print $2}')"
         response="$(curl_with_opts ${headers} "${url}")"
-        user_data="$(echo "${response}" | base64 -d || true)"
-        if [ -z "${user_data}" ]; then
-            user_data="${response}"
-        fi
+
+        user_data="${response}"       
+        # Only the response from Azure is base64 encoded                  
+        if [[ "${url}" =~ metadata/instance/compute/userData ]]; then
+            user_data="$(echo "${response}" | base64 -d)"
+        fi    
+        
         if [ -n "${user_data}" ] && echo "${user_data}" | jq -e . > /dev/null; then
             echo "${user_data}" | jq -r '.cloudConfig="done"'
             break
