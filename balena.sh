@@ -2,15 +2,6 @@
 
 set -ex
 
-devices="$(blkid | grep resin-boot | awk -F':' '{print $1}' | tr '\n' ' ')"
-for device in $devices; do
-    if [[ "${device}" == *mapper* ]]; then
-        continue
-    else
-        echo "${device}"
-    fi
-done
-
 # 1. AWS
 # 2. DigitalOcean
 # 3. Azure
@@ -25,48 +16,105 @@ metadata_urls=(
 function cleanup() {
    (sync && umount "${1}") || true
 }
-
 trap 'cleanup ${tmpmnt}' EXIT
 
-function mount_boot() {
+function get_device() {
+    local label
+    label=${1-resin-boot}
+    devices="$(blkid | grep "${label}" | awk -F':' '{print $1}' | tr '\n' ' ')"
+    for device in $devices; do
+        if [[ "${device}" == *mapper* ]]; then
+            continue
+        else
+            echo "${device}"
+        fi
+    done
+}
+
+function mount_host() {
     local tmpmnt
     tmpmnt="$(mktemp -d)"
-    mount "${1}" "${tmpmnt}"
+    local device
+    device="${1:-$(get_device)}"
+    mount "${device}" "${tmpmnt}"
     echo "${tmpmnt}"
 }
 
 function curl_with_opts() {
-    curl --fail --silent --connect-timeout 3 "$@"
+    args=("$@")
+    curl --silent --connect-timeout 3 "${args[@]}"
 }
 
 function config_from_metadata() {
-    #shellcheck disable=SC2034,SC2039 # /bin/sh is a symbolic link to bash on balenaOS
+    # shellcheck disable=SC2034,SC2039 # /bin/sh is a symbolic link to bash on balenaOS
     for metadata_url in "${metadata_urls[@]}"; do
-        url="$(echo "${metadata_url}" | awk -F';' '{print $1}')"
-        headers="$(echo "${metadata_url}" | awk -F';' '{print $2}')"
-        response="$(curl_with_opts ${headers} "${url}")"
+        local token  # IMDSv2
+        token="$(curl_with_opts --fail -X PUT "http://169.254.169.254/latest/api/token" \
+          -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")"
 
-        user_data="${response}"       
-        # Only the response from Azure is base64 encoded                  
+        local url
+        url="$(echo "${metadata_url}" | awk -F';' '{print $1}')"
+
+        local headers
+        headers="$(echo "${metadata_url}" | awk -F';' '{print $2}')"
+
+        if [[ -n "$token" ]]; then
+            # shellcheck disable=SC2206
+            headers=(${headers} -H "X-aws-ec2-metadata-token: ${token}")
+        fi
+
+        response="$(curl_with_opts --fail "${headers[@]}" "${url}" || echo '{}')"
+
+        # only Azure responses are (currently) base64 encoded
         if [[ "${url}" =~ metadata/instance/compute/userData ]]; then
             user_data="$(echo "${response}" | base64 -d)"
-        fi    
-        
-        if [ -n "${user_data}" ] && echo "${user_data}" | jq -e . > /dev/null; then
+        else
+            user_data="${response}"
+        fi
+
+        openssh_key="$(aws_openssh_key_from_metadata)"
+        if [[ -n "$openssh_key" ]]; then
+            user_data="$(echo "${user_data}" | jq -re --arg pub_key "${openssh_key}" '.os.sshKeys += [$pub_key]')"
+        fi
+
+        if [ -n "${user_data}" ] && echo "${user_data}" | jq -e . >/dev/null; then
             echo "${user_data}" | jq -r '.cloudConfig="done"'
             break
         fi
     done
 }
 
-tmpmnt="$(mount_boot "${device}")"
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/building-shared-amis.html#public-amis-install-credentials
+# https://docs.aws.amazon.com/marketplace/latest/userguide/product-and-ami-policies.html#ami-security
+function aws_openssh_key_from_metadata() {
+    tmpkey="$(mktemp)"
+
+    # try IMDSv2?
+    local token
+    token="$(curl_with_opts --fail -X PUT "http://169.254.169.254/latest/api/token" \
+      -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")"
+
+    curl_with_opts http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key \
+      -H "X-aws-ec2-metadata-token: $token" >"${tmpkey}"
+
+    if [[ -s "$tmpkey" ]] ; then
+        cat <"${tmpkey}"
+    else
+        # .. IMDSv1
+        curl_with_opts http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key
+    fi
+    rm -f "${tmpkey}"
+}
+
+
+tmpmnt="$(mount_host)"
 tmpconf="$(mktemp)"
-config_from_metadata > "${tmpconf}"
+config_from_metadata >"${tmpconf}"
 
 if [[ -f "${tmpmnt}/config.json" ]] && [[ -f "${tmpconf}" ]]; then
-    cloud_config="$(cat < "${tmpmnt}/config.json" | jq -r '.cloudConfig')"
-    if ! [[ "${cloud_config}" =~ ^done$ ]]; then
-        cat < "${tmpconf}" > "${tmpmnt}/config.json"
+    status="$(cat <"${tmpmnt}/config.json" | jq -r '.cloudConfig')"
+    if ! [[ "${status}" =~ ^done$ ]]; then
+        cat <"${tmpconf}" >"${tmpmnt}/config.json"
     fi
     cleanup "${tmpmnt}" && balena-idle
 fi
