@@ -1,4 +1,14 @@
 - commits:
+    - subject: "minor: IMDSv2 and SSH keys from (AWS) metadata"
+      hash: f668f3da9663780e2155cf272238132328f34f65
+      body: ""
+      footer: {}
+      author: Anton Belodedenko
+      nested: []
+  version: 0.2.0
+  title: ""
+  date: 2025-11-07T13:29:09.725Z
+- commits:
     - subject: only base64 decode metadata if running on Azure
       hash: c41a617317e564e35523afa235bdf6052e797ef2
       body: ""
