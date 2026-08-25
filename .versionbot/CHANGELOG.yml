@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update flowzonify to v0.4.0
+      hash: cf853068d39723a83fc4657f4793c83cae41a443
+      body: |
+        Update flowzonify from 0.0.0 to 0.4.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 0.2.1
+  title: ""
+  date: 2026-08-25T15:09:42.178Z
+- commits:
     - subject: "minor: IMDSv2 and SSH keys from (AWS) metadata"
       hash: f668f3da9663780e2155cf272238132328f34f65
       body: ""
